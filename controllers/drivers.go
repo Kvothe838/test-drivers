@@ -1,10 +1,13 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/Kvothe838/drivers-api/model"
 	"github.com/Kvothe838/drivers-api/services"
+	"github.com/gorilla/mux"
 )
 
 func SaveDriver(response http.ResponseWriter, request *http.Request) {
@@ -39,4 +42,22 @@ func SaveDriver(response http.ResponseWriter, request *http.Request) {
 
 	services.SaveDriver(driver)
 	WriteStatus(response, http.StatusOK)
+}
+
+func GetDrivers(response http.ResponseWriter, request *http.Request) {
+	page := mux.Vars(request)["pages"]
+
+	parsedPage, err := strconv.ParseInt(page, 10, 64)
+	if err != nil {
+		WriteStatus(response, http.StatusBadRequest)
+		return
+	}
+
+	drivers, err := services.GetDrivers(int(parsedPage))
+	if err != nil {
+		fmt.Printf("error getting drivers: %v\n", err)
+		WriteStatus(response, http.StatusInternalServerError)
+	}
+
+	SendJSONResponse(response, http.StatusOK, drivers)
 }

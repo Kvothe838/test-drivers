@@ -1,8 +1,6 @@
 package services
 
 import (
-	"fmt"
-
 	"github.com/Kvothe838/drivers-api/model"
 )
 
@@ -14,10 +12,13 @@ var profileDriver model.Profile = model.Profile{
 }
 var allDrivers []model.Driver = make([]model.Driver, 0)
 
+const driversPerPage = 50
+
 func SaveDriver(newDriver model.Driver) {
 	newDriver.User.Profile = profileDriver
 	allDrivers = append(allDrivers, newDriver)
+}
 
-	fmt.Printf("new driver: %v\n", newDriver)
-	fmt.Printf("all drivers: %v\n", allDrivers)
+func GetDrivers(page int) ([]model.Driver, error) {
+	return allDrivers[page*50 : (page*50)+50], nil
 }
