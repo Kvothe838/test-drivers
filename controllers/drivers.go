@@ -61,3 +61,13 @@ func GetDrivers(response http.ResponseWriter, request *http.Request) {
 
 	SendJSONResponse(response, http.StatusOK, drivers)
 }
+
+func GetNonTravellingDrivers(response http.ResponseWriter, request *http.Request) {
+	drivers, err := services.GetNonTravellingDrivers()
+	if err != nil {
+		fmt.Printf("error getting drivers: %v\n", err)
+		WriteStatus(response, http.StatusInternalServerError)
+	}
+
+	SendJSONResponse(response, http.StatusOK, drivers)
+}
