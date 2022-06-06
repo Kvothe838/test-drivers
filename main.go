@@ -13,8 +13,12 @@ func main() {
 	router := mux.NewRouter()
 
 	post := BuildSetHandleFunc(router, "POST")
+	get := BuildSetHandleFunc(router, "GET")
 
 	post("/drivers", controllers.SaveDriver)
+	get("/drivers", controllers.GetDrivers)
+
+	post("/login", controllers.Login)
 
 	server := &http.Server{
 		Addr:         ":8080",
