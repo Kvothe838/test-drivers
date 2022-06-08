@@ -8,7 +8,7 @@ import (
 )
 
 func SaveUser(user model.User) (*model.User, error) {
-	result, err := Db.Exec("INSERT INTO User(username, hash) VALUES($1, $2) RETURNING id", user.Username, user.Hash)
+	result, err := Db.Exec("INSERT INTO User(username, hash, profile_id) VALUES($1, $2, $3) RETURNING id", user.Username, user.Hash, user.Profile.Id)
 	if err != nil {
 		fmt.Printf("error inserting into user: %v\n", err)
 		return nil, err

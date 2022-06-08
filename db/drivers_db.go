@@ -48,7 +48,13 @@ func GetNonTravellingDrivers() ([]model.Driver, error) {
 }
 
 func SaveDriver(driver model.Driver) error {
-	_, err := Db.Exec("INSERT INTO Driver(dni, name, surname) VALUES($1, $2, $3)", driver.DNI, driver.Name, driver.Surname)
+	savedUser, err := SaveUser(driver.User)
+	if err != nil {
+		fmt.Printf("error saving user at SaveDriver: %v", err)
+		return err
+	}
+
+	_, err = Db.Exec("INSERT INTO Driver(dni, name, surname, user_id) VALUES($1, $2, $3)", driver.DNI, driver.Name, driver.Surname, savedUser.Id)
 	if err != nil {
 		fmt.Printf("error inserting into user: %v\n", err)
 		return err

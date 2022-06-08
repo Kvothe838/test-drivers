@@ -7,17 +7,23 @@ import (
 	"github.com/Kvothe838/drivers-api/model"
 )
 
-var permissionCreateUsers model.Permission = model.Permission{
-	Name: "createUsers",
-}
-var profileDriver model.Profile = model.Profile{
-	Permissions: []model.Permission{permissionCreateUsers},
-}
-
 func SaveDriver(newDriver model.Driver) error {
-	newDriver.User.Profile = profileDriver
+	profiles, err := GetProfiles()
+	if err != nil {
+		fmt.Printf("error getting profiles: %v", err)
+		return err
+	}
 
-	err := db.SaveDriver(newDriver)
+	driverProfile := FilterProfile(profiles, DriverProfile)
+	if driverProfile == nil {
+		errorDescription := "error filtering driver profile"
+		fmt.Println(errorDescription)
+		return fmt.Errorf(errorDescription)
+	}
+
+	newDriver.User.Profile = *driverProfile
+
+	err = db.SaveDriver(newDriver)
 	if err != nil {
 		fmt.Printf("error saving driver: %v\n", err)
 		return err
