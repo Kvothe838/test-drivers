@@ -28,8 +28,10 @@ func SaveDriver(response http.ResponseWriter, request *http.Request) {
 	if err != nil {
 		if err == services.UserAlreadyExists {
 			WriteStatus(response, http.StatusConflict)
+			return
 		} else {
 			WriteStatus(response, http.StatusInternalServerError)
+			return
 		}
 	}
 
@@ -40,7 +42,12 @@ func SaveDriver(response http.ResponseWriter, request *http.Request) {
 		Surname: data.Surname,
 	}
 
-	services.SaveDriver(driver)
+	err = services.SaveDriver(driver)
+	if err != nil {
+		WriteStatus(response, http.StatusInternalServerError)
+		return
+	}
+
 	WriteStatus(response, http.StatusOK)
 }
 

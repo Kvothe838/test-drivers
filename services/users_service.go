@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/Kvothe838/drivers-api/db"
 	"github.com/Kvothe838/drivers-api/model"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -21,7 +22,11 @@ func Login(username, password string) (*model.User, error) {
 		fmt.Printf("error encrypting password: %v\n", err)
 		return nil, err
 	}
-	user := getUserByUsername(username)
+
+	user, err := db.GetUserByUsername(username)
+	if err != nil {
+		return nil, fmt.Errorf("error getting user by username: %v", err)
+	}
 
 	if user == nil {
 		return nil, UserOrPasswordIncorrect
@@ -35,17 +40,6 @@ func Login(username, password string) (*model.User, error) {
 		return nil, UserOrPasswordIncorrect
 	}
 }
-
-func getUserByUsername(username string) *model.User {
-	for _, user := range allUsers {
-		if user.Username == username {
-			return &user
-		}
-	}
-
-	return nil
-}
-
 func encrypt(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	return string(bytes), err
@@ -56,15 +50,18 @@ func compareHashAndPassword(password, hash string) bool {
 }
 
 func SignUp(username, password string) (*model.User, error) {
-	alreadyExistingUser := getUserByUsername(username)
+	alreadyExistingUser, err := db.GetUserByUsername(username)
+	if err != nil {
+		return nil, fmt.Errorf("error getting user by username: %v", err)
+	}
+
 	if alreadyExistingUser != nil {
 		return nil, UserAlreadyExists
 	}
 
 	hashedPassword, err := encrypt(password)
 	if err != nil {
-		fmt.Printf("error encrypting password: %v", err)
-		return nil, err
+		return nil, fmt.Errorf("error encrypting password: %v", err)
 	}
 
 	newUser := model.User{
@@ -72,7 +69,10 @@ func SignUp(username, password string) (*model.User, error) {
 		Hash:     hashedPassword,
 	}
 
-	allUsers = append(allUsers, newUser)
+	savedUser, err := db.SaveUser(newUser)
+	if err != nil {
+		return nil, fmt.Errorf("error saving user in db: %v", err)
+	}
 
-	return &newUser, nil
+	return savedUser, nil
 }

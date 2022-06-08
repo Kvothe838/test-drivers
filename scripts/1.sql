@@ -48,4 +48,8 @@ CREATE TABLE Travel(
     REFERENCES Driver(id)
 );
 
+CREATE TABLE Configuration(
+    rows_per_page INT
+);
+
 COMMIT;
