@@ -6,10 +6,13 @@ import (
 	"time"
 
 	"github.com/Kvothe838/drivers-api/controllers"
+	"github.com/Kvothe838/drivers-api/db"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 )
 
 func main() {
+	db.InitDatabase()
 	router := mux.NewRouter()
 
 	post := BuildSetHandleFunc(router, "POST")
