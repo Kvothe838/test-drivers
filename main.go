@@ -22,6 +22,7 @@ func main() {
 
 	post("/drivers", controllers.SaveDriver)
 	get("/drivers", controllers.GetDrivers)
+	get("/drivers/non-travelling", controllers.GetNonTravellingDrivers)
 
 	post("/login", controllers.Login)
 
