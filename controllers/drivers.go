@@ -13,7 +13,7 @@ import (
 func SaveDriver(response http.ResponseWriter, request *http.Request) {
 	isAuthorized, err := IsAuthorized(request, "save-drivers")
 	if err != nil {
-		WriteStatus(response, http.StatusBadRequest)
+		WriteStatus(response, http.StatusInternalServerError)
 		return
 	}
 
