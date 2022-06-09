@@ -4,6 +4,8 @@
 
 The API is used by a merchandise service company that is delivered by drivers. This API allows you to enter as an administrator, manage the ABM of the drivers and see a list of them.
 
+[See more details about requirements.](https://docs.google.com/document/d/1jMgaHhiBAJurhoOI6lDN5Z3ChWY-CjUKQKrfthf9wkU/edit)
+
 ## Endpoints
 
 ## POST /drivers
