@@ -76,3 +76,7 @@ func SignUp(username, password string) (*model.User, error) {
 
 	return savedUser, nil
 }
+
+func UserHasPermission(userId int64, permissionName string) (*bool, error) {
+	return db.UserHasPermission(userId, permissionName)
+}

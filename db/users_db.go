@@ -25,8 +25,8 @@ func SaveUser(user model.User) (*model.User, error) {
 
 func GetUserByUsername(username string) (*model.User, error) {
 	var user model.User
-	row := Db.QueryRow("SELECT username, hash FROM User WHERE username = $1", username)
-	if err := row.Scan(&user.Username, &user.Hash); err != nil {
+	row := Db.QueryRow("SELECT username, hash, profile_id FROM User WHERE username = $1", username)
+	if err := row.Scan(&user.Username, &user.Hash, &user.Profile.Id); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, nil
 		}
@@ -36,4 +36,24 @@ func GetUserByUsername(username string) (*model.User, error) {
 	}
 
 	return &user, nil
+}
+
+func UserHasPermission(userId int64, permissionName string) (*bool, error) {
+	var res bool
+	row := Db.QueryRow(`SELECT true 
+							 FROM User u 
+							 JOIN Profile pro ON u.profile_id = pro.id
+							 JOIN Profiles_Permissions p ON pro.id = p.profile_id
+							 JOIN Permission per ON p.permission_id = per.id
+							 WHERE u.id = $1 AND per.name = $2`, userId, permissionName)
+	if err := row.Scan(&res); err != nil {
+		if err == sql.ErrNoRows {
+			res = false
+			return &res, nil
+		}
+
+		return nil, err
+	}
+
+	return &res, nil
 }

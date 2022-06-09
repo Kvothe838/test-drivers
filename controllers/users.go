@@ -36,4 +36,20 @@ func Login(response http.ResponseWriter, request *http.Request) {
 		WriteStatus(response, http.StatusForbidden)
 		return
 	}
+
+	/* token, err := GetToken(user)
+	if err != nil {
+		WriteStatus(response, http.StatusInternalServerError)
+		return
+	}
+
+	request.AddCookie(&http.Cookie{
+		Name:  "jwt-token",
+		Value: *token,
+	}) */
+
+	request.AddCookie(&http.Cookie{
+		Name:  "userId",
+		Value: fmt.Sprintf("%d", user.Id),
+	})
 }

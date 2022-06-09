@@ -15,6 +15,8 @@ func main() {
 	db.InitDatabase()
 	router := mux.NewRouter()
 
+	router.Use()
+
 	post := BuildSetHandleFunc(router, "POST")
 	get := BuildSetHandleFunc(router, "GET")
 
@@ -40,6 +42,7 @@ func main() {
 
 func BuildSetHandleFunc(router *mux.Router, method string) func(path string, handlerFunc http.HandlerFunc) {
 	return func(path string, handlerFunc http.HandlerFunc) {
-		router.HandleFunc(path, handlerFunc).Methods(method)
+		handlerFuncThoughMiddleware := controllers.Middleware(handlerFunc)
+		router.HandleFunc(path, handlerFuncThoughMiddleware).Methods(method)
 	}
 }

@@ -11,6 +11,17 @@ import (
 )
 
 func SaveDriver(response http.ResponseWriter, request *http.Request) {
+	isAuthorized, err := IsAuthorized(request, "save-drivers")
+	if err != nil {
+		WriteStatus(response, http.StatusBadRequest)
+		return
+	}
+
+	if !*isAuthorized {
+		WriteStatus(response, http.StatusForbidden)
+		return
+	}
+
 	var data struct {
 		DNI      string `json:"DNI"`
 		Name     string `json:"name"`
@@ -19,7 +30,7 @@ func SaveDriver(response http.ResponseWriter, request *http.Request) {
 		Password string `json:"password"`
 	}
 
-	err := Decode(request.Body, &data, response)
+	err = Decode(request.Body, &data, response)
 	if err != nil {
 		return
 	}
@@ -52,6 +63,17 @@ func SaveDriver(response http.ResponseWriter, request *http.Request) {
 }
 
 func GetDrivers(response http.ResponseWriter, request *http.Request) {
+	isAuthorized, err := IsAuthorized(request, "get-drivers")
+	if err != nil {
+		WriteStatus(response, http.StatusBadRequest)
+		return
+	}
+
+	if !*isAuthorized {
+		WriteStatus(response, http.StatusForbidden)
+		return
+	}
+
 	page := mux.Vars(request)["pages"]
 
 	parsedPage, err := strconv.ParseInt(page, 10, 64)
@@ -70,6 +92,17 @@ func GetDrivers(response http.ResponseWriter, request *http.Request) {
 }
 
 func GetNonTravellingDrivers(response http.ResponseWriter, request *http.Request) {
+	isAuthorized, err := IsAuthorized(request, "get-drivers")
+	if err != nil {
+		WriteStatus(response, http.StatusBadRequest)
+		return
+	}
+
+	if !*isAuthorized {
+		WriteStatus(response, http.StatusForbidden)
+		return
+	}
+
 	drivers, err := services.GetNonTravellingDrivers()
 	if err != nil {
 		fmt.Printf("error getting drivers: %v\n", err)

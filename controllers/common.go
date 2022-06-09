@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strconv"
+
+	"github.com/Kvothe838/drivers-api/services"
 )
 
 func WriteStatus(response http.ResponseWriter, status int) {
@@ -36,4 +39,21 @@ func Decode(body io.ReadCloser, target interface{}, response http.ResponseWriter
 	}
 
 	return nil
+}
+
+func IsAuthorized(request *http.Request, permissionName string) (*bool, error) {
+	/* userId := request.Context().Value("userId").(int64) */
+	cookie, err := request.Cookie("userId")
+	if err != nil {
+		fmt.Printf("error getting userId from cookie: %v\n", err)
+		return nil, err
+	}
+
+	userId, err := strconv.ParseInt(cookie.Value, 10, 64)
+	if err != nil {
+		fmt.Printf("error parsing userId from %s: %v", cookie.Value, err)
+		return nil, err
+	}
+
+	return services.UserHasPermission(userId, permissionName)
 }
