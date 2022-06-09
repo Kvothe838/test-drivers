@@ -8,7 +8,17 @@ import (
 	"github.com/Kvothe838/drivers-api/model"
 )
 
-func GetDrivers(page int, rowsPerPage int) ([]model.Driver, error) {
+type DriversPersistance interface {
+	GetDrivers(page int, rowsPerPage int) ([]model.Driver, error)
+	SaveDriver(newDriver model.Driver) error
+	GetNonTravellingDrivers() ([]model.Driver, error)
+}
+
+type DriversDb struct{}
+
+var DefaultDriversPersistance DriversPersistance = &DriversDb{}
+
+func (_ *DriversDb) GetDrivers(page int, rowsPerPage int) ([]model.Driver, error) {
 	rows, err := Db.Query(`SELECT d.dni, d.name, d.surname, u.username
 						   FROM Driver d
 						   JOIN User u
@@ -26,7 +36,7 @@ func GetDrivers(page int, rowsPerPage int) ([]model.Driver, error) {
 	return drivers, nil
 }
 
-func GetNonTravellingDrivers() ([]model.Driver, error) {
+func (_ *DriversDb) GetNonTravellingDrivers() ([]model.Driver, error) {
 	now := time.Now().Unix()
 	rows, err := Db.Query(`SELECT d.dni, d.name, d.surname, u.username
 						   FROM Driver d
@@ -47,14 +57,14 @@ func GetNonTravellingDrivers() ([]model.Driver, error) {
 	return drivers, nil
 }
 
-func SaveDriver(driver model.Driver) error {
-	savedUser, err := SaveUser(driver.User)
+func (_ *DriversDb) SaveDriver(newDriver model.Driver) error {
+	savedUser, err := DefaultUsersPersistance.SaveUser(newDriver.User)
 	if err != nil {
 		fmt.Printf("error saving user at SaveDriver: %v", err)
 		return err
 	}
 
-	_, err = Db.Exec("INSERT INTO Driver(dni, name, surname, user_id) VALUES($1, $2, $3)", driver.DNI, driver.Name, driver.Surname, savedUser.Id)
+	_, err = Db.Exec("INSERT INTO Driver(dni, name, surname, user_id) VALUES($1, $2, $3)", newDriver.DNI, newDriver.Name, newDriver.Surname, savedUser.Id)
 	if err != nil {
 		fmt.Printf("error inserting into user: %v\n", err)
 		return err

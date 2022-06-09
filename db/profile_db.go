@@ -6,7 +6,15 @@ import (
 	"github.com/Kvothe838/drivers-api/model"
 )
 
-func GetProfiles() ([]model.Profile, error) {
+type ProfilesPersistance interface {
+	GetProfiles() ([]model.Profile, error)
+}
+
+type ProfilesDb struct{}
+
+var DefaultProfilesPersistance ProfilesPersistance = &ProfilesDb{}
+
+func (_ *ProfilesDb) GetProfiles() ([]model.Profile, error) {
 	rows, err := Db.Query(`SELECT id, name
 						   FROM Profile`)
 	if err != nil {

@@ -7,7 +7,15 @@ import (
 	"github.com/Kvothe838/drivers-api/model"
 )
 
-func GetConfiguration() (*model.Configuration, error) {
+type ConfigurationPersistance interface {
+	GetConfiguration() (*model.Configuration, error)
+}
+
+type ConfigurationDb struct{}
+
+var DefaultConfigurationPersistance ConfigurationPersistance = &ConfigurationDb{}
+
+func (_ *ConfigurationDb) GetConfiguration() (*model.Configuration, error) {
 	var config model.Configuration
 
 	row := Db.QueryRow("SELECT rows_per_page FROM Configuration WHERE")

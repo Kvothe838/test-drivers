@@ -23,7 +23,7 @@ func SaveDriver(newDriver model.Driver) error {
 
 	newDriver.User.Profile = *driverProfile
 
-	err = db.SaveDriver(newDriver)
+	err = db.DefaultDriversPersistance.SaveDriver(newDriver)
 	if err != nil {
 		fmt.Printf("error saving driver: %v\n", err)
 		return err
@@ -33,13 +33,13 @@ func SaveDriver(newDriver model.Driver) error {
 }
 
 func GetDrivers(page int) ([]model.Driver, error) {
-	config, err := db.GetConfiguration()
+	config, err := db.DefaultConfigurationPersistance.GetConfiguration()
 	if err != nil {
 		fmt.Printf("error getting configuration: %v\n", err)
 		return nil, err
 	}
 
-	drivers, err := db.GetDrivers(page, config.RowsPerPage)
+	drivers, err := db.DefaultDriversPersistance.GetDrivers(page, config.RowsPerPage)
 	if err != nil {
 		fmt.Printf("error getting drivers: %v\n", err)
 		return nil, err
@@ -49,7 +49,7 @@ func GetDrivers(page int) ([]model.Driver, error) {
 }
 
 func GetNonTravellingDrivers() ([]model.Driver, error) {
-	drivers, err := db.GetNonTravellingDrivers()
+	drivers, err := db.DefaultDriversPersistance.GetNonTravellingDrivers()
 	if err != nil {
 		fmt.Printf("error getting non travelling drivers: %v\n", err)
 		return nil, err

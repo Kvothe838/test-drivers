@@ -23,7 +23,7 @@ func Login(username, password string) (*model.User, error) {
 		return nil, err
 	}
 
-	user, err := db.GetUserByUsername(username)
+	user, err := db.DefaultUsersPersistance.GetUserByUsername(username)
 	if err != nil {
 		return nil, fmt.Errorf("error getting user by username: %v", err)
 	}
@@ -50,7 +50,7 @@ func compareHashAndPassword(password, hash string) bool {
 }
 
 func SignUp(username, password string) (*model.User, error) {
-	alreadyExistingUser, err := db.GetUserByUsername(username)
+	alreadyExistingUser, err := db.DefaultUsersPersistance.GetUserByUsername(username)
 	if err != nil {
 		return nil, fmt.Errorf("error getting user by username: %v", err)
 	}
@@ -69,7 +69,7 @@ func SignUp(username, password string) (*model.User, error) {
 		Hash:     hashedPassword,
 	}
 
-	savedUser, err := db.SaveUser(newUser)
+	savedUser, err := db.DefaultUsersPersistance.SaveUser(newUser)
 	if err != nil {
 		return nil, fmt.Errorf("error saving user in db: %v", err)
 	}
@@ -78,5 +78,5 @@ func SignUp(username, password string) (*model.User, error) {
 }
 
 func UserHasPermission(userId int64, permissionName string) (*bool, error) {
-	return db.UserHasPermission(userId, permissionName)
+	return db.DefaultUsersPersistance.UserHasPermission(userId, permissionName)
 }

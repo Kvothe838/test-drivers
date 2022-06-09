@@ -42,7 +42,7 @@ func main() {
 
 func BuildSetHandleFunc(router *mux.Router, method string) func(path string, handlerFunc http.HandlerFunc) {
 	return func(path string, handlerFunc http.HandlerFunc) {
-		handlerFuncThoughMiddleware := controllers.Middleware(handlerFunc)
-		router.HandleFunc(path, handlerFuncThoughMiddleware).Methods(method)
+		/* handlerFuncThoughMiddleware := controllers.Middleware(handlerFunc) */
+		router.HandleFunc(path, handlerFunc).Methods(method)
 	}
 }

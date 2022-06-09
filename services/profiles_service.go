@@ -10,7 +10,7 @@ import (
 const DriverProfile = "driver"
 
 func GetProfiles() ([]model.Profile, error) {
-	profiles, err := db.GetProfiles()
+	profiles, err := db.DefaultProfilesPersistance.GetProfiles()
 	if err != nil {
 		fmt.Printf("error getting all profiles: %v\n", err)
 		return nil, err
