@@ -52,4 +52,6 @@ func Login(response http.ResponseWriter, request *http.Request) {
 		Name:  "userId",
 		Value: fmt.Sprintf("%d", user.Id),
 	})
+
+	WriteStatus(response, http.StatusOK)
 }
