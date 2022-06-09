@@ -83,3 +83,27 @@ Status 200: processed ok
 Status 400: bad request
 Status 403: user unauthorized
 Status 500: internal server error
+
+
+## POST /login
+
+Login with profile.
+
+
+### Body:
+
+```
+{
+  Username: string, required
+  Password: string, required
+  Profile: string, required
+}
+```
+
+Possible profiles:
+- admin
+- driver
+
+### Returns
+
+Status 200: logged ok
