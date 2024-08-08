@@ -1,6 +1,6 @@
-# Drivers API Challenge
+# Drivers API
 
-This is a solution to a challenge for a hiring process.
+This is a technical test for the hiring process of a backend developer position.
 
 ## Challenge information
 ### Context
